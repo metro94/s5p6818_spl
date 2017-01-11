@@ -10,7 +10,7 @@
 #include <common.h>
 #include <io.h>
 
-void boot_master(void)
+void bootMaster(uint32_t cpuid)
 {
 	int i, d = 0;
 
@@ -18,12 +18,12 @@ void boot_master(void)
 	setbits32(0xc001b004, 1 << 12);
 
 	while (1) {
-		for (i = 0; i < 200000; ++i)
+		for (i = 0; i < 1000000; ++i)
 			d ^= i;
 		tglbits32(0xc001b000, 1 << 12);
 	}
 }
 
-void boot_slave(void)
+void bootSlave(uint32_t cpuid)
 {
 }

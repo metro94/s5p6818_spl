@@ -13,10 +13,6 @@ VERSION = 0.1
 
 ################################
 
-include config.mk
-
-################################
-
 # project settings
 
 target-name		=	$(BOARD)
@@ -69,6 +65,23 @@ INCLUDES		=	-I src/include
 
 ################################
 
+include config.mk
+
+CFLAGS			+=	-DS5P6818_PLLSETREG0=$(S5P6818_PLLSETREG0) \
+					-DS5P6818_PLLSETREG1=$(S5P6818_PLLSETREG1) \
+					-DS5P6818_PLLSETREG2=$(S5P6818_PLLSETREG2) \
+					-DS5P6818_PLLSETREG3=$(S5P6818_PLLSETREG3) \
+					-DS5P6818_CLKDIVREG0=$(S5P6818_CLKDIVREG0) \
+					-DS5P6818_CLKDIVREG1=$(S5P6818_CLKDIVREG1) \
+					-DS5P6818_CLKDIVREG2=$(S5P6818_CLKDIVREG2) \
+					-DS5P6818_CLKDIVREG3=$(S5P6818_CLKDIVREG3) \
+					-DS5P6818_CLKDIVREG4=$(S5P6818_CLKDIVREG4) \
+					-DS5P6818_CLKDIVREG5=$(S5P6818_CLKDIVREG5) \
+					-DS5P6818_CLKDIVREG6=$(S5P6818_CLKDIVREG6) \
+					-DS5P6818_CLKDIVREG7=$(S5P6818_CLKDIVREG7) \
+					-DS5P6818_CLKDIVREG8=$(S5P6818_CLKDIVREG8)
+
+################################
 
 .PHONY: mkdir clean
 

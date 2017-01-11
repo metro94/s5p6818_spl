@@ -11,8 +11,8 @@
 
 	// Global functions declare
 	.global getCPUID
-	.global boot_master
-	.global boot_slave
+	.global bootMaster
+	.global bootSlave
 
 	// Global constants declare
 	.global vectors
@@ -26,8 +26,8 @@
 start:
 	b		reset
 
-	.global build_info
-build_info:
+	.global buildInfo
+buildInfo:
 	.word	0x68180001		// S5P6818, v0.1
 
 reset:
@@ -44,21 +44,21 @@ reset:
 	msr		VBAR_EL3, x0
 
 	ands	x0, x29, #3
-	bne		prepare_cpu		// if (CPUID != 0 && CPUID != 4) skip clear_bss & set_cache
+	bne		prepareCPU		// if (CPUID != 0 && CPUID != 4) skip clear_bss & set_cache
 	cmp		x29, xzr
-	bne		set_cache		// if (CPUID != 0) skip clear_bss
+	bne		setCache		// if (CPUID != 0) skip clear_bss
 
 	// Clear BSS
 	ldr		x1, =__bss_start__
 	ldr		x2, =__bss_end__
 
-clear_bss_loop:
+clearBSS:
 	str		xzr, [x1], #8
 	cmp		x1, x2
-	bls		clear_bss_loop	// if x1 <= x2 goto clear_bss_loop
+	bls		clearBSS		// if x1 <= x2 goto clear_bss_loop
 
 	// Set L2 cache
-set_cache:
+setCache:
 	mrs		x0, S3_1_C11_C0_2	// L2CTLR_EL1
 	orr		x0, x0, #(1 << 22)		// [22] Core RAMs are implemented with ECC.
 	orr		x0, x0, #(1 << 21)		// [21] L2 cache is implemented with ECC.
@@ -80,7 +80,7 @@ set_cache:
 	msr		ACTLR_EL3, x0
 
 	// Set registers of each CPU
-prepare_cpu:
+prepareCPU:
 	mrs		x0, SCR_EL3
 	orr		x0, x0, #(1 << 10)		// [10] The next lower level is AArch64.
 	bic		x0, x0, #(1 << 8)		// [8]  The HVC instruction is UNDEFINED at all exception levels.
@@ -150,7 +150,7 @@ prepare_cpu:
 	// CPU5: -0x080
 	// CPU6: -0x040
 	// CPU7: -0x000
-make_stack:
+makeStack:
 	ldr		x0, =INTERNAL_SRAM_BASE
 	add		x0, x0, #INTERNAL_SRAM_SIZE
 	ldr		x1, =CPU_NUMBERS
@@ -167,9 +167,12 @@ make_stack:
 	cmp		x29, xzr
 	bne		1f
 
-	b		boot_master
+	bl		setClock
+	mov		x0, x29
+	b		bootMaster
 	b		.
 
 1:
-	b		boot_slave
+	mov		x0, x29
+	b		bootSlave
 	b		.
