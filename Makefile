@@ -25,6 +25,7 @@ obj-dir			:=	src
 target-dir		:=	out
 
 obj-y			:=	start.o exceptions.o boot.o lib.o
+obj-y			+=	serial.o
 
 obj-list		=	$(addprefix $(obj-dir)/, $(obj-y))
 
@@ -66,6 +67,10 @@ INCLUDES		=	-I src/include
 ################################
 
 include config.mk
+
+ifeq ($(DEBUG), y)
+CFLAGS			+=	-DDEBUG
+endif
 
 CFLAGS			+=	-DS5P6818_PLLSETREG0=$(S5P6818_PLLSETREG0) \
 					-DS5P6818_PLLSETREG1=$(S5P6818_PLLSETREG1) \
